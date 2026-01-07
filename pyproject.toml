@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -46,7 +46,7 @@ cli = [
 ]
 
 [project.scripts]
-rdc-tools = "renderdoc_tools.cli.main:main"
+rdc-tools = "renderdoc_tools.cli.entry_point:main"
 
 [tool.setuptools]
 packages = ["renderdoc_tools"]

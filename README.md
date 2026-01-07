@@ -31,17 +31,62 @@ Compatible with **RenderDoc** and **RenderDoc Meta Fork** (Quest/VR profiling).
 
 ## Quick Start
 
-### 1. Installation
+### Automated Setup (Recommended)
 
+**Windows PowerShell:**
 ```bash
-# Install from source
-pip install -e .
-
-# Or install dependencies manually
-pip install -r requirements.txt
+# One command does everything: creates venv, installs package, sets up wrappers
+.\setup.ps1
 ```
 
-### 2. Setup RenderDoc
+**Linux/Mac:**
+```bash
+# Make executable and run
+chmod +x setup.sh
+./setup.sh
+```
+
+This will:
+1. ✅ Create Python 3.6 virtual environment (`venv36`)
+2. ✅ Install the package (`pip install -e .`)
+3. ✅ Automatically detect RenderDoc (standard and Meta Fork)
+4. ✅ Set up convenience wrapper scripts
+5. ✅ Verify installation
+
+### Manual Setup (Alternative)
+
+If you prefer manual setup:
+
+**Step 1: Create Virtual Environment**
+```bash
+# Windows
+.\setup_venv.ps1
+.\venv36\Scripts\Activate.ps1
+
+# Linux/Mac
+python3.6 -m venv venv36
+source venv36/bin/activate
+```
+
+**Step 2: Install Package**
+```bash
+pip install -e .
+```
+
+**Note:** RenderDoc Meta Fork requires Python 3.6 exactly. See `INSTALL_PYTHON36.md` for installation instructions.
+
+### 3. RenderDoc Detection (Automatic!)
+
+**The package automatically detects RenderDoc installations!**
+
+The setup script will:
+- ✅ Automatically detect both standard RenderDoc and RenderDoc Meta Fork
+- ✅ Use Meta Fork if both are available (preferred for Quest development)
+- ✅ Configure everything automatically - **no manual PYTHONPATH setup needed!**
+
+**Manual setup (only if automatic detection fails):**
+
+If RenderDoc is installed in a non-standard location, you can set PYTHONPATH manually:
 
 **Windows (Standard RenderDoc):**
 ```bash
@@ -59,6 +104,8 @@ export PYTHONPATH=/usr/share/renderdoc/
 export LD_LIBRARY_PATH=/usr/lib/renderdoc/
 ```
 
+**Note:** In most cases, manual setup is not needed - the package handles it automatically!
+
 ### 3. Verify Setup
 
 ```bash
@@ -68,20 +115,32 @@ python test_renderdoc.py
 
 ### 4. Process a Capture
 
-**Using the CLI command (recommended after pip install):**
+**After running setup, use the convenience wrapper scripts (recommended):**
 ```bash
-# Quick export
+# Windows PowerShell
+.\rdc-tools.ps1 workflow capture.rdc --preset quick
+.\rdc-tools.ps1 workflow quest_capture.rdc --preset quest
+.\rdc-tools.ps1 parse capture.rdc -o output.json --counters
+.\rdc-tools.ps1 workflow --list-presets
+
+# Windows CMD
+rdc-tools.bat workflow capture.rdc --preset quick
+
+# Linux/Mac
+./rdc-tools.sh workflow capture.rdc --preset quick
+```
+
+**Alternative: Add to PATH to use `rdc-tools` directly:**
+```bash
+# Windows PowerShell (add to current session)
+$env:Path += ";$PWD\venv36\Scripts"
 rdc-tools workflow capture.rdc --preset quick
 
-# Quest analysis
-rdc-tools workflow quest_capture.rdc --preset quest
-
-# Parse with options
-rdc-tools parse capture.rdc -o output.json --counters
-
-# List all presets
-rdc-tools workflow --list-presets
+# Or add permanently to your PowerShell profile
+# Add: $env:Path += ";C:\Users\vsiva\dev\RenderDocTools\venv36\Scripts"
 ```
+
+**Note:** The wrapper scripts automatically use `venv36`, so you never need to manually activate it!
 
 **Or using Python module (if not installed):**
 ```bash
@@ -115,21 +174,41 @@ Download from: https://renderdoc.org/builds
 
 For Quest development, download **RenderDoc Meta Fork** from Meta Developer site.
 
-### 2. Install Python Package
+### 2. Create Virtual Environment
+
+**For RenderDoc Meta Fork (requires Python 3.6):**
+```bash
+# Windows - use setup script
+.\setup_venv.ps1
+.\venv36\Scripts\Activate.ps1
+
+# Or manually
+python3.6 -m venv venv36
+.\venv36\Scripts\Activate.ps1  # Windows
+source venv36/bin/activate     # Linux/Mac
+```
+
+**For Standard RenderDoc (Python 3.6+):**
+```bash
+# Create venv with your Python version
+python -m venv venv
+.\venv\Scripts\Activate.ps1  # Windows
+source venv/bin/activate      # Linux/Mac
+```
+
+### 3. Install Python Package
 
 ```bash
-# Clone repository
-git clone <repository-url>
-cd RenderDocTools
-
-# Install package
+# After activating virtual environment
 pip install -e .
 
 # Or install dependencies only
 pip install -r requirements.txt
 ```
 
-### 3. Setup Python Module Path
+**Important:** Always activate your virtual environment before running `pip install -e .` or using the tools.
+
+### 4. Setup Python Module Path
 
 The package automatically detects RenderDoc installation, but you can also set it manually:
 
@@ -149,11 +228,13 @@ export PYTHONPATH=/usr/share/renderdoc/
 export LD_LIBRARY_PATH=/usr/lib/renderdoc/
 ```
 
-### 4. Install Python 3.6
+### 5. Install Python 3.6 (Meta Fork Only)
 
 See [INSTALL_PYTHON36.md](INSTALL_PYTHON36.md) for detailed instructions.
 
-### 5. Verify Installation
+**Note:** This step is only needed if you're using RenderDoc Meta Fork, which requires Python 3.6 exactly.
+
+### 6. Verify Installation
 
 ```bash
 python setup_check.py
@@ -161,6 +242,28 @@ python test_renderdoc.py
 ```
 
 ## Usage
+
+### Quick Answer: Do I Need to Activate venv36 Every Time?
+
+**Short answer:** No! Use the wrapper scripts - they automatically use `venv36` for you.
+
+**Just use the wrapper scripts:**
+```bash
+# Windows PowerShell - no activation needed!
+.\rdc-tools.ps1 workflow capture.rdc --preset quick
+.\rdc-tools.ps1 parse capture.rdc -o output.json
+
+# Linux/Mac
+./rdc-tools.sh workflow capture.rdc --preset quick
+```
+
+**How it works:** The wrapper scripts automatically detect `venv36` in your project directory and use its Python interpreter. You never need to manually activate the virtual environment.
+
+**Alternative:** If you add `venv36\Scripts` (Windows) or `venv36/bin` (Linux/Mac) to your PATH, you can use `rdc-tools` directly:
+```bash
+# After adding to PATH
+rdc-tools workflow capture.rdc --preset quick
+```
 
 ### New Architecture (Recommended)
 
@@ -230,35 +333,36 @@ with CaptureFile("capture.rdc") as capture:
 
 ```bash
 # List all presets
-rdc-tools workflow --list-presets
+.\rdc-tools.ps1 workflow --list-presets  # Windows PowerShell
+./rdc-tools.sh workflow --list-presets   # Linux/Mac
 
 # Run workflow preset
-rdc-tools workflow capture.rdc --preset quick
+.\rdc-tools.ps1 workflow capture.rdc --preset quick
 
 # Quest analysis
-rdc-tools workflow quest.rdc --preset quest --output-dir ./results
+.\rdc-tools.ps1 workflow quest.rdc --preset quest --output-dir ./results
 
 # Custom log level
-rdc-tools workflow capture.rdc --preset full --log-level DEBUG
+.\rdc-tools.ps1 workflow capture.rdc --preset full --log-level DEBUG
 ```
 
 #### Parse Command
 
 ```bash
 # Export to JSON
-rdc-tools parse capture.rdc -o output.json
+.\rdc-tools.ps1 parse capture.rdc -o output.json
 
 # Export with pipeline state
-rdc-tools parse capture.rdc -o output.json --pipeline
+.\rdc-tools.ps1 parse capture.rdc -o output.json --pipeline
 
 # Export with performance counters
-rdc-tools parse capture.rdc -o output.json --counters
+.\rdc-tools.ps1 parse capture.rdc -o output.json --counters
 
 # Export to CSV
-rdc-tools parse capture.rdc --actions actions.csv --resources resources.csv
+.\rdc-tools.ps1 parse capture.rdc --actions actions.csv --resources resources.csv
 ```
 
-**Note:** After `pip install -e .`, you can use `rdc-tools` directly. Without installation, use `python -m renderdoc_tools.cli` instead.
+**Note:** Use the wrapper scripts (`.\rdc-tools.ps1` or `./rdc-tools.sh`) - they automatically use `venv36`. Alternatively, add `venv36\Scripts` to PATH to use `rdc-tools` directly.
 
 ### Workflow Presets
 

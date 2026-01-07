@@ -11,7 +11,7 @@ from renderdoc_tools.utils.logging_config import setup_logging
 def workflow_command(args):
     """Execute workflow command"""
     parser = argparse.ArgumentParser(description='Run workflow preset on RDC file')
-    parser.add_argument('rdc_file', help='Path to RDC capture file')
+    parser.add_argument('rdc_file', nargs='?', help='Path to RDC capture file')
     parser.add_argument('--preset', '-p', default='quick', help='Workflow preset')
     parser.add_argument('--output-dir', '-o', help='Output directory')
     parser.add_argument('--list-presets', action='store_true', help='List all presets')
@@ -27,6 +27,9 @@ def workflow_command(args):
             print(f"  {name:12} - {desc}")
         print()
         return
+    
+    if not parsed_args.rdc_file:
+        parser.error("rdc_file is required when not using --list-presets")
     
     setup_logging(level=parsed_args.log_level)
     
