@@ -12,10 +12,26 @@ def workflow_command(args):
     """Execute workflow command"""
     parser = argparse.ArgumentParser(description='Run workflow preset on RDC file')
     parser.add_argument('rdc_file', nargs='?', help='Path to RDC capture file')
-    parser.add_argument('--preset', '-p', default='quick', help='Workflow preset')
+    
+    # Preset selection: either use --preset or shorthand flags
+    preset_group = parser.add_mutually_exclusive_group()
+    preset_group.add_argument('--preset', '-p', dest='preset_name', 
+                             help='Workflow preset (quick, full, quest, csv-only, performance)')
+    preset_group.add_argument('--quick', action='store_const', const='quick', 
+                             dest='preset_name', help='Quick export preset (default)')
+    preset_group.add_argument('--full', action='store_const', const='full',
+                             dest='preset_name', help='Full analysis preset')
+    preset_group.add_argument('--quest', action='store_const', const='quest',
+                             dest='preset_name', help='Quest/VR analysis preset')
+    preset_group.add_argument('--csv-only', action='store_const', const='csv-only',
+                             dest='preset_name', help='CSV export only preset')
+    preset_group.add_argument('--performance', action='store_const', const='performance',
+                             dest='preset_name', help='Performance analysis preset')
+    
     parser.add_argument('--output-dir', '-o', help='Output directory')
     parser.add_argument('--list-presets', action='store_true', help='List all presets')
     parser.add_argument('--log-level', default='INFO', help='Logging level')
+
     
     parsed_args = parser.parse_args(args)
     
@@ -40,12 +56,16 @@ def workflow_command(args):
     
     output_dir = Path(parsed_args.output_dir) if parsed_args.output_dir else None
     
+    # Resolve preset: use specified preset or default to 'quick'
+    preset_name = parsed_args.preset_name or 'quick'
+    
     try:
-        preset = get_preset(parsed_args.preset)
+        preset = get_preset(preset_name)
         runner = WorkflowRunner(preset)
         capture_data = runner.run(rdc_path, output_dir)
         
-        print(f"\n✓ Workflow '{parsed_args.preset}' completed!")
+        print(f"\n✓ Workflow '{preset_name}' completed!")
+
         print(f"  Actions: {len(capture_data.actions)}")
         print(f"  Resources: {len(capture_data.resources)}")
         print(f"  Shaders: {len(capture_data.shaders)}")

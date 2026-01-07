@@ -56,12 +56,21 @@ rdc-tools workflow capture.rdc --preset quick
 
 ### Quick Export
 ```bash
+# Using shorthand flag (recommended)
+rdc-tools workflow capture.rdc --quick
+
+# Or using --preset argument
 rdc-tools workflow capture.rdc --preset quick
+```
+
+### Full Analysis
+```bash
+rdc-tools workflow capture.rdc --full
 ```
 
 ### Quest Analysis
 ```bash
-rdc-tools workflow quest.rdc --preset quest
+rdc-tools workflow quest.rdc --quest
 ```
 
 ### List All Presets
@@ -78,13 +87,15 @@ python batch_process.py captures/ --preset quick
 
 ## Workflow Presets
 
-| Preset | Speed | Output | Use Case |
-|--------|-------|--------|----------|
-| `quick` | ⚡⚡⚡ | JSON | Daily development, quick checks |
-| `full` | ⚡ | JSON+CSV+Pipeline | Complete analysis |
-| `quest` | ⚡⚡ | JSON+CSV+Report | Quest/VR optimization |
-| `csv-only` | ⚡⚡⚡ | CSV only | Data analysis in Excel/CSV tools |
-| `performance` | ⚡⚡ | JSON+Counters+Report | Performance profiling |
+| Preset | Shorthand | Speed | Output | Use Case |
+|--------|-----------|-------|--------|----------|
+| `quick` | `--quick` | ⚡⚡⚡ | JSON | Daily development, quick checks |
+| `full` | `--full` | ⚡ | JSON+CSV+Pipeline | Complete analysis |
+| `quest` | `--quest` | ⚡⚡ | JSON+CSV+Report | Quest/VR optimization |
+| `csv-only` | `--csv-only` | ⚡⚡⚡ | CSV only | Data analysis in Excel/CSV tools |
+| `performance` | `--performance` | ⚡⚡ | JSON+Counters+Report | Performance profiling |
+
+> **Tip**: Use shorthand flags (`--quick`, `--full`) or `--preset <name>` - both work!
 
 ---
 
