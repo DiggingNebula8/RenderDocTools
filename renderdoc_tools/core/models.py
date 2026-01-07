@@ -112,9 +112,9 @@ class PerformanceCounter(BaseModel):
 class CaptureData(BaseModel):
     """Complete capture data structure"""
     capture_info: CaptureInfo = Field(..., alias="captureInfo")
-    actions: List[Action] = []
-    resources: List[Resource] = []
-    shaders: List[Shader] = []
+    actions: List[Action] = Field(default_factory=list)
+    resources: List[Resource] = Field(default_factory=list)
+    shaders: List[Shader] = Field(default_factory=list)
     pipeline_states: Optional[List[PipelineState]] = Field(
         None,
         alias="pipelineStates"

@@ -48,7 +48,11 @@ rdc-tools workflow capture.rdc --preset quick
 - RenderDoc (with Python bindings) or **RenderDoc Meta Fork**
 - **Pydantic** (for data validation)
 
-> **Note:** RenderDoc Meta Fork requires Python 3.6 exactly. Python 3.9+ will cause import hangs. See [INSTALL_PYTHON36.md](INSTALL_PYTHON36.md) for installation instructions.
+> [!WARNING]
+> **Python 3.6 Security Notice**: Python 3.6 reached end-of-life in December 2021 and no longer receives security updates. This version is required for RenderDoc Meta Fork compatibility (built against python36.dll). For standard RenderDoc, consider using Python 3.8+ if possible.
+
+> [!NOTE]
+> RenderDoc Meta Fork requires Python 3.6 exactly. Python 3.9+ will cause import hangs. See [INSTALL_PYTHON36.md](INSTALL_PYTHON36.md) for installation instructions.
 
 ---
 
