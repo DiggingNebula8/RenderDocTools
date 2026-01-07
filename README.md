@@ -17,7 +17,7 @@ Compatible with **RenderDoc** and **RenderDoc Meta Fork** (Quest/VR profiling).
 
 **2. Verify Installation**
 ```bash
-python setup_check.py
+python diagnose.py
 ```
 
 **3. Use It**
