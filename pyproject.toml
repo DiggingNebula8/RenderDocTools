@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "renderdoc-tools"
+version = "2.0.0"
+description = "Open-source parser for extracting structured data from RenderDoc capture files (.rdc) to JSON and CSV formats"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {text = "MIT"}
+authors = [
+    {name = "Siva", email = ""}
+]
+keywords = ["renderdoc", "rdc", "graphics", "profiling", "quest", "vr"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Graphics",
+]
+
+dependencies = [
+    "pydantic>=1.8.0,<3.0.0",
+    "typing-extensions>=4.0.0; python_version<'3.8'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+]
+
+cli = [
+    "click>=8.0.0",
+    "rich>=13.0.0",
+    "tqdm>=4.65.0",
+]
+
+[project.scripts]
+rdc-tools = "renderdoc_tools.cli.main:main"
+
+[tool.setuptools]
+packages = ["renderdoc_tools"]
+
+[tool.setuptools.package-data]
+renderdoc_tools = ["py.typed"]
+
+[tool.black]
+line-length = 100
+target-version = ['py36']
+
+[tool.ruff]
+line-length = 100
+target-version = "py36"
+
+[tool.mypy]
+python_version = "3.6"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
