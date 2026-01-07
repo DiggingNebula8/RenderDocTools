@@ -20,7 +20,7 @@ class CaptureInfo(BaseModel):
     frame_info: Optional[Dict[str, Any]] = Field(default_factory=dict, alias="frame_info")
     
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class Action(BaseModel):
@@ -43,7 +43,7 @@ class Action(BaseModel):
     dispatch_threads_dimension: Optional[Dict[str, int]] = Field(None, alias="dispatchThreadsDimension")
     
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class TextureInfo(BaseModel):
@@ -73,7 +73,7 @@ class Resource(BaseModel):
     buffer: Optional[BufferInfo] = None
     
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class Shader(BaseModel):
@@ -85,7 +85,7 @@ class Shader(BaseModel):
     reflection: Optional[Dict[str, Any]] = None
     
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class PipelineState(BaseModel):
@@ -97,7 +97,7 @@ class PipelineState(BaseModel):
     )
     
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class PerformanceCounter(BaseModel):
@@ -125,5 +125,5 @@ class CaptureData(BaseModel):
     )
     
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 

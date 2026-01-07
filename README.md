@@ -8,24 +8,21 @@ Compatible with **RenderDoc** and **RenderDoc Meta Fork** (Quest/VR profiling).
 
 ---
 
-## Quick Start (3 Steps)
+## Quick Start (2 Steps)
 
-**1. Run Setup**
+**1. Install**
 ```bash
-.\setup.ps1
+pip install -e .
 ```
 
-**2. Verify Installation**
+**2. Use It**
 ```bash
-python diagnose.py
+rdc-tools workflow capture.rdc --quick
 ```
 
-**3. Use It**
-```bash
-rdc-tools workflow capture.rdc --preset quick
-```
+**That's it!** 🎉
 
-**That's it!** See [Troubleshooting](#troubleshooting) if you encounter issues.
+> **Optional**: Run `python diagnose.py` if you encounter issues.
 
 ---
 
@@ -44,15 +41,15 @@ rdc-tools workflow capture.rdc --preset quick
 
 ## Requirements
 
-- **Python 3.6** (Required for RenderDoc Meta Fork)
+- **Python 3.8+** (Recommended: Python 3.10 or higher)
 - RenderDoc (with Python bindings) or **RenderDoc Meta Fork**
 - **Pydantic** (for data validation)
 
-> [!WARNING]
-> **Python 3.6 Security Notice**: Python 3.6 reached end-of-life in December 2021 and no longer receives security updates. This version is required for RenderDoc Meta Fork compatibility (built against python36.dll). For standard RenderDoc, consider using Python 3.8+ if possible.
-
 > [!NOTE]
-> RenderDoc Meta Fork requires Python 3.6 exactly. Python 3.9+ will cause import hangs. See [INSTALL_PYTHON36.md](INSTALL_PYTHON36.md) for installation instructions.
+> **Modern Python Support**: RenderDocTools works with Python 3.8-3.14 using `os.add_dll_directory()` for Windows DLL loading. Python 3.6 is no longer required.
+
+> [!TIP]
+> **RenderDoc Meta Fork 63.13+** (with RenderDoc v1.40 integration) fully supports modern Python versions.
 
 ---
 
@@ -60,11 +57,7 @@ rdc-tools workflow capture.rdc --preset quick
 
 ### Quick Export
 ```bash
-# Using shorthand flag (recommended)
 rdc-tools workflow capture.rdc --quick
-
-# Or using --preset argument
-rdc-tools workflow capture.rdc --preset quick
 ```
 
 ### Full Analysis
@@ -91,15 +84,13 @@ python batch_process.py captures/ --preset quick
 
 ## Workflow Presets
 
-| Preset | Shorthand | Speed | Output | Use Case |
-|--------|-----------|-------|--------|----------|
-| `quick` | `--quick` | ⚡⚡⚡ | JSON | Daily development, quick checks |
-| `full` | `--full` | ⚡ | JSON+CSV+Pipeline | Complete analysis |
-| `quest` | `--quest` | ⚡⚡ | JSON+CSV+Report | Quest/VR optimization |
-| `csv-only` | `--csv-only` | ⚡⚡⚡ | CSV only | Data analysis in Excel/CSV tools |
-| `performance` | `--performance` | ⚡⚡ | JSON+Counters+Report | Performance profiling |
-
-> **Tip**: Use shorthand flags (`--quick`, `--full`) or `--preset <name>` - both work!
+| Shorthand | Speed | Output | Use Case |
+|-----------|-------|--------|----------|
+| `--quick` | ⚡⚡⚡ | JSON | Daily development, quick checks |
+| `--full` | ⚡ | JSON+CSV+Pipeline | Complete analysis |
+| `--quest` | ⚡⚡ | JSON+CSV+Report | Quest/VR optimization |
+| `--csv-only` | ⚡⚡⚡ | CSV only | Data analysis tools |
+| `--performance` | ⚡⚡ | JSON+Counters+Report | Performance profiling |
 
 ---
 
@@ -168,22 +159,28 @@ The Meta fork adds:
 ## Troubleshooting
 
 ### "renderdoc module not found"
-- Run `python setup_check.py` for diagnostics
-- Ensure RenderDoc is installed
-- The package auto-detects RenderDoc in standard locations
+```bash
+# Run diagnostics
+python diagnose.py
 
-### "Capture cannot be replayed"
-- Check API support on your system
-- Some captures require specific GPU/drivers
-- Try on the machine that created the capture
+# Ensure RenderDoc is installed
+# Package auto-detects standard locations
+```
 
-### Import hangs with Python 3.9+
-- RenderDoc Meta Fork requires Python 3.6 (exact version)
-- Install Python 3.6: See [INSTALL_PYTHON36.md](INSTALL_PYTHON36.md)
+### "rdc-tools command not found"
+```bash
+# Reinstall package
+pip install -e .
 
-### Package not found
-- Ensure package is installed: `pip install -e .`
-- Use wrapper scripts: `.\rdc-tools.ps1` (auto-activates venv)
+# On Linux/Mac, ensure ~/.local/bin is in PATH
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+### Package import errors
+```bash
+# Reinstall with dependencies
+pip install -e .[cli]
+```
 
 ---
 

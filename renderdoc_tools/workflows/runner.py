@@ -6,6 +6,7 @@ import logging
 
 from renderdoc_tools.core import CaptureFile
 from renderdoc_tools.core.models import CaptureData
+from renderdoc_tools.core.capture_info import CaptureInfoExtractor
 from renderdoc_tools.workflows.base import Workflow
 from renderdoc_tools.exporters import JSONExporter
 

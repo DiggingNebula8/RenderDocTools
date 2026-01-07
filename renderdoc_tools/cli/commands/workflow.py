@@ -13,20 +13,18 @@ def workflow_command(args):
     parser = argparse.ArgumentParser(description='Run workflow preset on RDC file')
     parser.add_argument('rdc_file', nargs='?', help='Path to RDC capture file')
     
-    # Preset selection: either use --preset or shorthand flags
+    # Preset selection via shorthand flags only
     preset_group = parser.add_mutually_exclusive_group()
-    preset_group.add_argument('--preset', '-p', dest='preset_name', 
-                             help='Workflow preset (quick, full, quest, csv-only, performance)')
     preset_group.add_argument('--quick', action='store_const', const='quick', 
-                             dest='preset_name', help='Quick export preset (default)')
+                             dest='preset_name', help='Quick export (default)')
     preset_group.add_argument('--full', action='store_const', const='full',
-                             dest='preset_name', help='Full analysis preset')
+                             dest='preset_name', help='Full analysis with pipeline state')
     preset_group.add_argument('--quest', action='store_const', const='quest',
-                             dest='preset_name', help='Quest/VR analysis preset')
+                             dest='preset_name', help='Quest/VR optimization analysis')
     preset_group.add_argument('--csv-only', action='store_const', const='csv-only',
-                             dest='preset_name', help='CSV export only preset')
+                             dest='preset_name', help='CSV export only')
     preset_group.add_argument('--performance', action='store_const', const='performance',
-                             dest='preset_name', help='Performance analysis preset')
+                             dest='preset_name', help='Performance profiling')
     
     parser.add_argument('--output-dir', '-o', help='Output directory')
     parser.add_argument('--list-presets', action='store_true', help='List all presets')

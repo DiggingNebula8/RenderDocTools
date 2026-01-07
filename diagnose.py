@@ -37,34 +37,16 @@ def print_check(passed, message, fix_hint=None):
 
 
 def check_python_version():
-    """Check if Python 3.6 is being used."""
+    """Check if Python 3.8+ is being used."""
     version = sys.version_info
-    is_36 = version.major == 3 and version.minor == 6
+    is_38_plus = version.major == 3 and version.minor >= 8
     
     print_check(
-        is_36,
+        is_38_plus,
         f"Python version: {version.major}.{version.minor}.{version.micro}",
-        "Install Python 3.6 (see INSTALL_PYTHON36.md)" if not is_36 else None
+        "Python 3.8+ required. See PYTHON_VERSIONS.md" if not is_38_plus else None
     )
-    return is_36
-
-
-def check_virtual_environment():
-    """Check if running in a virtual environment."""
-    in_venv = hasattr(sys, 'real_prefix') or (
-        hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix
-    )
-    
-    venv_path = Path("venv36")
-    venv_exists = venv_path.exists()
-    
-    print_check(
-        in_venv or venv_exists,
-        "Virtual environment (venv36)",
-        "Run: .\\setup.ps1 to create venv36" if not venv_exists else
-        "   Activate with: .\\venv36\\Scripts\\Activate.ps1" if not in_venv else None
-    )
-    return in_venv or venv_exists
+    return is_38_plus
 
 
 def check_package_installed():
@@ -78,15 +60,14 @@ def check_package_installed():
         print_check(
             False,
             "Package not installed",
-            "Run: pip install -e . (in venv36)"
+            "Run: pip install -e ."
         )
         return False
 
 
 def check_renderdoc():
     """Check if RenderDoc can be found and imported."""
-    try:
-        # Try to use the package's detector
+   try:
         from renderdoc_tools.utils.renderdoc_detector import find_renderdoc_installations
         installations = find_renderdoc_installations()
         
@@ -120,25 +101,28 @@ def check_renderdoc():
         return False
 
 
-def check_wrapper_scripts():
-    """Check if wrapper scripts exist."""
-    wrappers = {
-        "PowerShell": Path("rdc-tools.ps1"),
-        "CMD": Path("rdc-tools.bat"),
-        "Bash": Path("rdc-tools.sh")
-    }
-    
-    all_exist = True
-    for name, path in wrappers.items():
-        exists = path.exists()
-        all_exist = all_exist and exists
-        print_check(
-            exists,
-            f"Wrapper script: {name} ({path})",
-            f"File missing: {path}" if not exists else None
+def check_cli_command():
+    """Check if rdc-tools command is available."""
+    try:
+        result = subprocess.run(
+            ["rdc-tools", "--help"],
+            capture_output=True,
+            timeout=5
         )
-    
-    return all_exist
+        success = result.returncode == 0
+        print_check(
+            success,
+            "rdc-tools command available",
+            "Reinstall: pip install -e ." if not success else None
+        )
+        return success
+    except Exception:
+        print_check(
+            False,
+            "rdc-tools command not available",
+            "Reinstall: pip install -e ."
+        )
+        return False
 
 
 def run_diagnostics():
@@ -148,11 +132,10 @@ def run_diagnostics():
     print(f"{Colors.BOLD}Running checks...{Colors.RESET}\n")
     
     results = {
-        "Python 3.6": check_python_version(),
-        "Virtual Environment": check_virtual_environment(),
+        "Python 3.8+": check_python_version(),
         "Package Installed": check_package_installed(),
         "RenderDoc": check_renderdoc(),
-        "Wrapper Scripts": check_wrapper_scripts()
+        "CLI Command": check_cli_command()
     }
     
     # Summary
@@ -168,7 +151,7 @@ def run_diagnostics():
     else:
         print(f"{Colors.YELLOW}⚠ {passed}/{total} checks passed{Colors.RESET}")
         print(f"\n{Colors.YELLOW}Please fix the issues above.{Colors.RESET}")
-        print(f"\n{Colors.CYAN}Quick fix:{Colors.RESET} Run {Colors.BOLD}.\\setup.ps1{Colors.RESET} to auto-setup")
+        print(f"\n{Colors.CYAN}Quick fix:{Colors.RESET} Run {Colors.BOLD}pip install -e .{Colors.RESET}")
     
     return passed == total
 
@@ -179,14 +162,6 @@ def auto_fix():
     
     print(f"{Colors.YELLOW}Attempting to fix issues...{Colors.RESET}\n")
     
-    # Check if venv exists
-    venv_path = Path("venv36")
-    if not venv_path.exists():
-        print(f"{Colors.CYAN}Creating virtual environment...{Colors.RESET}")
-        # This would be risky to do automatically because Python 3.6 may not be found
-        print(f"{Colors.YELLOW}Cannot auto-fix: Please run .\\setup.ps1{Colors.RESET}")
-        return False
-    
     # Check if package is installed
     try:
         import renderdoc_tools
@@ -194,7 +169,7 @@ def auto_fix():
         print(f"{Colors.CYAN}Installing package...{Colors.RESET}")
         try:
             subprocess.check_call([
-                str(venv_path / "Scripts" / "python.exe"),
+                sys.executable,
                 "-m", "pip", "install", "-e", "."
             ])
             print(f"{Colors.GREEN}✓ Package installed{Colors.RESET}")
