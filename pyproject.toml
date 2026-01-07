@@ -7,6 +7,7 @@ name = "renderdoc-tools"
 version = "2.0.0"
 description = "Open-source parser for extracting structured data from RenderDoc capture files (.rdc) to JSON and CSV formats"
 readme = "README.md"
+# Python 3.6 required for RenderDoc Meta Fork compatibility (built against python36.dll)
 requires-python = ">=3.6"
 license = {text = "MIT"}
 authors = [
