@@ -68,7 +68,22 @@ python test_renderdoc.py
 
 ### 4. Process a Capture
 
-**Using the new CLI (recommended):**
+**Using the CLI command (recommended after pip install):**
+```bash
+# Quick export
+rdc-tools workflow capture.rdc --preset quick
+
+# Quest analysis
+rdc-tools workflow quest_capture.rdc --preset quest
+
+# Parse with options
+rdc-tools parse capture.rdc -o output.json --counters
+
+# List all presets
+rdc-tools workflow --list-presets
+```
+
+**Or using Python module (if not installed):**
 ```bash
 # Quick export
 python -m renderdoc_tools.cli workflow capture.rdc --preset quick
@@ -215,33 +230,35 @@ with CaptureFile("capture.rdc") as capture:
 
 ```bash
 # List all presets
-python -m renderdoc_tools.cli workflow --list-presets
+rdc-tools workflow --list-presets
 
 # Run workflow preset
-python -m renderdoc_tools.cli workflow capture.rdc --preset quick
+rdc-tools workflow capture.rdc --preset quick
 
 # Quest analysis
-python -m renderdoc_tools.cli workflow quest.rdc --preset quest --output-dir ./results
+rdc-tools workflow quest.rdc --preset quest --output-dir ./results
 
 # Custom log level
-python -m renderdoc_tools.cli workflow capture.rdc --preset full --log-level DEBUG
+rdc-tools workflow capture.rdc --preset full --log-level DEBUG
 ```
 
 #### Parse Command
 
 ```bash
 # Export to JSON
-python -m renderdoc_tools.cli parse capture.rdc -o output.json
+rdc-tools parse capture.rdc -o output.json
 
 # Export with pipeline state
-python -m renderdoc_tools.cli parse capture.rdc -o output.json --pipeline
+rdc-tools parse capture.rdc -o output.json --pipeline
 
 # Export with performance counters
-python -m renderdoc_tools.cli parse capture.rdc -o output.json --counters
+rdc-tools parse capture.rdc -o output.json --counters
 
 # Export to CSV
-python -m renderdoc_tools.cli parse capture.rdc --actions actions.csv --resources resources.csv
+rdc-tools parse capture.rdc --actions actions.csv --resources resources.csv
 ```
+
+**Note:** After `pip install -e .`, you can use `rdc-tools` directly. Without installation, use `python -m renderdoc_tools.cli` instead.
 
 ### Workflow Presets
 
