@@ -174,6 +174,15 @@ def main():
     print_step(step_num, f"Building RenderDoc ({build_config})...")
     print(f"{C.YELLOW}This may take 10-30 minutes...{C.RESET}\n")
     
+    # Set Python prefix for RenderDoc build
+    # RenderDoc's python.props checks RENDERDOC_PYTHON_PREFIX64 for custom Python
+    import os
+    build_env = os.environ.copy()
+    if py_info.get('prefix'):
+        python_prefix = py_info['prefix']
+        build_env['RENDERDOC_PYTHON_PREFIX64'] = python_prefix
+        print(f"  Using Python prefix: {python_prefix}")
+    
     # MSBuild command
     msbuild_args = [
         str(msbuild),
@@ -184,7 +193,24 @@ def main():
         '/v:minimal'  # Minimal verbosity
     ]
     
-    run_cmd(msbuild_args, cwd=renderdoc_dir)
+    # Run with custom environment
+    print(f"  $ {' '.join(msbuild_args)}")
+    result = subprocess.run(
+        msbuild_args,
+        cwd=renderdoc_dir,
+        env=build_env,
+        capture_output=True,
+        text=True
+    )
+    
+    if result.returncode != 0:
+        print(f"{C.RED}Error:{C.RESET}")
+        if result.stderr:
+            print(result.stderr)
+        if result.stdout:
+            print(result.stdout)
+        sys.exit(1)
+    
     print_success("Build complete!")
     
     # Step 6: Copy Python DLL if needed
