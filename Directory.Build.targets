@@ -1,0 +1,50 @@
+<Project>
+  <!--
+    RenderDoc Build Fixes - Directory.Build.targets
+    ================================================
+    This file applies build-time fixes without modifying submodule files.
+    Place in the RenderDocTools root directory.
+  -->
+
+  <!--
+    FIX 1: Force consistent runtime library for Development configuration
+    ======================================================================
+    Problem: Breakpad projects use MTd (MultiThreadedDebug) but RenderDoc uses MD (MultiThreadedDLL)
+    Solution: Force MD and NDEBUG for all projects in Development config
+    
+    This Target runs before ClCompile and forcibly replaces the settings.
+  -->
+  <Target Name="FixDevelopmentRuntimeLibrary" 
+          BeforeTargets="ClCompile" 
+          Condition="'$(Configuration)'=='Development'">
+    
+    <!-- Force MultiThreadedDLL runtime -->
+    <ItemGroup>
+      <ClCompile>
+        <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+        <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      </ClCompile>
+    </ItemGroup>
+    
+    <!-- Replace _DEBUG with NDEBUG in preprocessor definitions -->
+    <ItemGroup>
+      <ClCompile>
+        <PreprocessorDefinitions>$([System.String]::Copy('%(PreprocessorDefinitions)').Replace('_DEBUG;','NDEBUG;'))</PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
+    
+  </Target>
+
+  <!--
+    FIX 2: Add missing Windows SDK libraries for breakpad
+    ======================================================
+    Problem: Breakpad uses wininet, version, etc. but static libs don't link these
+    Solution: Add them to renderdoc's linker inputs
+  -->
+  <ItemDefinitionGroup Condition="'$(ProjectName)'=='renderdoc'">
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies);wininet.lib;version.lib;msimg32.lib;usp10.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+
+</Project>

@@ -54,25 +54,30 @@ def main():
     print(f"\n{C_BOLD}[2] Checking Python environment...{C_RESET}")
     run_cmd([sys.executable, str(root / 'scripts' / 'detect_python.py')])
     
-    # Step 3: Build RenderDoc
+    
+    # Step 3: Retarget solution to current VS/SDK
     if not args.skip_build:
-        print(f"\n{C_BOLD}[3] Building RenderDoc...{C_RESET}")
-        print(f"{C_YELLOW}Note: Directory.Build.targets handles retargeting automatically.{C_RESET}")
+        print(f"\n{C_BOLD}[3] Retargeting solution to current Visual Studio...{C_RESET}")
+        run_cmd([sys.executable, str(root / 'scripts' / 'retarget.py')], cwd=root)
+    
+    # Step 4: Build RenderDoc
+    if not args.skip_build:
+        print(f"\n{C_BOLD}[4] Building RenderDoc...{C_RESET}")
         print(f"{C_YELLOW}This will take 10-30 minutes...{C_RESET}\n")
         run_cmd([sys.executable, str(root / 'scripts' / 'build.py')], cwd=root)
     else:
         print(f"\n{C_YELLOW}[3] Skipping RenderDoc build{C_RESET}\n")
     
-    # Step 4: Install package
+    # Step 5: Install package
     if not args.skip_install:
-        print(f"{C_BOLD}[4] Installing RenderDocTools package...{C_RESET}")
+        print(f"{C_BOLD}[5] Installing RenderDocTools package...{C_RESET}")
         run_cmd([sys.executable, '-m', 'pip', 'install', '-e', '.'], cwd=root)
         print(f"{C_GREEN}[OK] Package installed{C_RESET}\n")
     else:
         print(f"{C_YELLOW}[4] Skipping package install{C_RESET}\n")
     
-    # Step 5: Verify
-    print(f"{C_BOLD}[5] Running diagnostics...{C_RESET}\n")
+    # Step 6: Verify
+    print(f"{C_BOLD}[6] Running diagnostics...{C_RESET}\n")
     run_cmd([sys.executable, str(root / 'diagnose.py')], cwd=root, check=False)
     
     # Done!
