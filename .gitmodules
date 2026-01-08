@@ -1,0 +1,3 @@
+[submodule "renderdoc"]
+	path = renderdoc
+	url = git@github.com:DiggingNebula8/renderdoc.git
