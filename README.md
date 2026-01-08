@@ -1,64 +1,63 @@
-# RenderDoc RDC Parser
+# RenderDocTools
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
 Open-source parser for extracting structured data from RenderDoc capture files (.rdc) to JSON and CSV formats.
 
 ---
 
-## Quick Start (2 Steps)
+## Quick Start
 
-**1. Install**
 ```bash
-pip install -e .
-```
+# 1. Clone and setup
+git clone --recursive git@github.com:DiggingNebula8/renderdoc.git
+cd RenderDocTools
+python setup_all.py
 
-**2. Use It**
-```bash
+# 2. Use it
 rdc-tools workflow capture.rdc --quick
 ```
 
-**That's it!** 🎉
-
-> **Optional**: Run `python diagnose.py` if you encounter issues.
+**That's it!** The setup script builds RenderDoc with your Python version and installs everything automatically.
 
 ---
 
 ## Features
 
-- Extract draw calls, dispatches, and all actions
-- Export resources (textures, buffers) with metadata
-- Extract shader information and reflection data
-- Optional pipeline state extraction per event
-- JSON and CSV output formats
-- API-agnostic (works with D3D11, D3D12, Vulkan, OpenGL)
-- **Streamlined workflow presets** (quick, full, etc.)
-- **Modular architecture** with plugin-ready extractors/exporters
+- **Extract draw calls, dispatches, and all actions**
+- **Export resources** (textures, buffers) with metadata
+- **Extract shaders** and reflection data
+- **Pipeline state** extraction per event (optional)
+- **JSON and CSV output** formats
+- **API-agnostic** (D3D11, D3D12, Vulkan, OpenGL)
+- **Streamlined workflow presets** (quick, full, performance)
 - **Type-safe** data models using Pydantic
-- **Structured logging** for debugging and monitoring
-
-## Requirements
-
-- **Python 3.8+** (Recommended: Python 3.10 or higher)
-- RenderDoc (with Python bindings)
-- **Pydantic** (for data validation)
-
-> [!NOTE]
-> **Modern Python Support**: RenderDocTools works with Python 3.8-3.14 using `os.add_dll_directory()` for Windows DLL loading. Python 3.6 is no longer required.
+- **Modular architecture** - plugin-ready extractors/exporters
 
 ---
 
-## Common Usage
+## Requirements
 
-### Quick Export
-```bash
-rdc-tools workflow capture.rdc --quick
-```
+- **Python 3.8+** (any version - auto-detected and configured)
+- **Visual Studio 2019/2022** (for building RenderDoc)
+- **Git** (for submodules)
 
-### Full Analysis
-```bash
-rdc-tools workflow capture.rdc --full
-```
+> [!NOTE]
+> **Python Version Flexibility**: Unlike typical RenderDoc Python integrations, RenderDocTools automatically builds RenderDoc with YOUR active Python version (3.8-3.14+). No need to install a specific Python version!
+
+---
+
+## Usage
+
+### Workflow Presets
+
+| Command | Output | Use Case |
+|---------|--------|----------|
+| `rdc-tools workflow capture.rdc --quick` | JSON | Daily development |
+| `rdc-tools workflow capture.rdc --full` | JSON+CSV+Pipeline | Complete analysis |
+| `rdc-tools workflow capture.rdc --csv-only` | CSV | Data tools |
+| `rdc-tools workflow capture.rdc --performance` | JSON+Counters | Profiling |
 
 ### List All Presets
 ```bash
@@ -72,25 +71,13 @@ python batch_process.py captures/ --preset quick
 
 ---
 
-## Workflow Presets
-
-| Shorthand | Speed | Output | Use Case |
-|-----------|-------|--------|----------|
-| `--quick` | ⚡⚡⚡ | JSON | Daily development, quick checks |
-| `--full` | ⚡ | JSON+CSV+Pipeline | Complete analysis |
-| `--csv-only` | ⚡⚡⚡ | CSV only | Data analysis tools |
-| `--performance` | ⚡⚡ | JSON+Counters+Report | Performance profiling |
-
----
-
 ## Output Formats
 
 ### JSON Structure
-
 ```json
 {
   "capture_info": {
-    "api": 2,
+    "api": "D3D11",
     "frame_info": {
       "frame_number": 5633,
       "capture_time": 0
@@ -99,7 +86,6 @@ python batch_process.py captures/ --preset quick
   "actions": [
     {
       "eventId": 1,
-      "actionId": 1,
       "name": "DrawIndexed",
       "flags": "Drawcall",
       "numIndices": 36,
@@ -112,63 +98,17 @@ python batch_process.py captures/ --preset quick
 ```
 
 ### CSV Format
-
 **actions.csv:**
-| eventId | actionId | name | flags | numIndices | numInstances |
-|---------|----------|------|-------|------------|--------------|
-| 1 | 1 | DrawIndexed | Drawcall | 36 | 1 |
-
-**resources.csv:**
-| resourceId | name | type | texture_width | texture_height | texture_format |
-|------------|------|------|---------------|----------------|----------------|
-| 123 | Backbuffer | Texture | 1920 | 1080 | R8G8B8A8_UNORM |
-
----
-
----
-
-## Troubleshooting
-
-### "renderdoc module not found"
-```bash
-# Run diagnostics
-python diagnose.py
-
-# Ensure RenderDoc is installed
-# Package auto-detects standard locations
+```csv
+eventId,actionId,name,flags,numIndices,numInstances
+1,1,DrawIndexed,Drawcall,36,1
 ```
-
-### "rdc-tools command not found"
-```bash
-# Reinstall package
-pip install -e .
-
-# On Linux/Mac, ensure ~/.local/bin is in PATH
-export PATH="$HOME/.local/bin:$PATH"
-```
-
-### Package import errors
-```bash
-# Reinstall with dependencies
-pip install -e .[cli]
-```
-
----
-
-## Documentation
-
-- **[WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md)** - Complete workflow guide
-- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Quick command reference
-- **[INSTALL_PYTHON36.md](INSTALL_PYTHON36.md)** - Python 3.6 installation guide
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Architecture overview
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 
 ---
 
 ## Python API
 
 ### Basic Usage
-
 ```python
 from renderdoc_tools.parser import Parser
 from renderdoc_tools.exporters import JSONExporter
@@ -181,17 +121,14 @@ exporter.export(data, Path("output.json"))
 ```
 
 ### Custom Workflow
-
 ```python
 from renderdoc_tools.workflows.base import Workflow
 from renderdoc_tools.extractors import ActionExtractor, ResourceExtractor
 from renderdoc_tools.exporters import JSONExporter
 from renderdoc_tools.workflows import WorkflowRunner
 
-# Create custom workflow
 custom_workflow = Workflow(
     name="custom",
-    description="Custom workflow",
     extractors=[ActionExtractor(), ResourceExtractor()],
     exporters=[JSONExporter()]
 )
@@ -200,44 +137,86 @@ runner = WorkflowRunner(custom_workflow)
 data = runner.run(Path("capture.rdc"))
 ```
 
-See [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) for more examples.
+---
+
+## How It Works
+
+RenderDocTools uses **version-agnostic build automation**:
+
+1. **Detects your Python** (3.8, 3.9, 3.10, 3.11, 3.12, 3.13, 3.14...)
+2. **Builds RenderDoc** with that exact Python version
+3. **Deploys Python DLL** to ensure ABI compatibility
+4. **Installs tools** - ready to use
+
+This solves the common Python version mismatch problem with RenderDoc's Python bindings.
+
+See [BUILD_GUIDE.md](BUILD_GUIDE.md) for technical details.
+
+---
+
+## Troubleshooting
+
+### Run Diagnostics
+```bash
+python diagnose.py
+```
+
+### Common Issues
+
+**Build fails:**
+- Ensure Visual Studio 2019/2022 is installed with C++ Desktop Development workload
+- Check Python is detected: `python scripts/detect_python.py`
+
+**"renderdoc module not found":**
+- Run `python setup_all.py` to rebuild with correct Python version
+- Verify: `python diagnose.py`
+
+**"rdc-tools command not found":**
+```bash
+pip install -e .[cli]
+```
+
+---
+
+## Documentation
+
+- **[BUILD_GUIDE.md](BUILD_GUIDE.md)** - Build system and Python version handling
+- **[WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md)** - Complete workflow guide
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - CLI command reference
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Architecture overview
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 
 ---
 
 ## Development
 
-### Setup Development Environment
-
 ```bash
-# Install development dependencies
+# Install with dev dependencies
 pip install -r requirements-dev.txt
 
-# Install package in editable mode
-pip install -e .
-```
+# Code quality tools
+black renderdoc_tools/       # Format
+ruff check renderdoc_tools/  # Lint
+mypy renderdoc_tools/        # Type check
 
-### Running Tests
-
-```bash
 # Run tests (when implemented)
 pytest tests/
-
-# With coverage
-pytest --cov=renderdoc_tools tests/
 ```
 
-### Code Quality
+---
 
-```bash
-# Format code
-black renderdoc_tools/
+## Contributing
 
-# Lint code
-ruff check renderdoc_tools/
+Contributions welcome! Areas for contribution:
 
-# Type checking
-mypy renderdoc_tools/
-```
+- Additional extractors (vertex buffers, texture data)
+- New exporters (XML, Protobuf, etc.)
+- Custom analyzers
+- Performance optimizations
+- Test coverage
+- GUI wrapper
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
@@ -247,92 +226,15 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
-## Contributing
-
-Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-Common areas for contribution:
-- Additional extractors (vertex buffers, textures to files)
-- New exporters (XML, YAML, etc.)
-- Custom analyzers
-- Performance optimizations
-- Documentation improvements
-- GUI wrapper
-
----
-
-## Advanced Setup
-
-<details>
-<summary>Click to expand manual setup instructions</summary>
-
-### Manual Installation
-
-If you prefer manual setup or the automated script doesn't work for your environment:
-
-#### 1. Install Python 3.6
-
-See [INSTALL_PYTHON36.md](INSTALL_PYTHON36.md) for detailed instructions.
-
-Common methods:
-- **Direct download**: https://www.python.org/downloads/release/python-3615/
-- **Scoop** (Windows): `scoop bucket add versions; scoop install versions/python36`
-
-#### 2. Create Virtual Environment
-
-```bash
-# Windows
-python3.6 -m venv venv36
-.\venv36\Scripts\Activate.ps1
-
-# Linux/Mac
-python3.6 -m venv venv36
-source venv36/bin/activate
-```
-
-#### 3. Install Package
-
-```bash
-pip install -e .
-```
-
-#### 4. Configure RenderDoc Path (if needed)
-
-The package automatically detects RenderDoc installations, but you can manually set:
-
-**Windows (Standard RenderDoc):**
-```bash
-set PYTHONPATH=C:\Program Files\RenderDoc\
-```
-
-**Linux:**
-```bash
-export PYTHONPATH=/usr/share/renderdoc/
-export LD_LIBRARY_PATH=/usr/lib/renderdoc/
-```
-
-#### 5. Verify Installation
-
-```bash
-python setup_check.py
-python test_renderdoc.py
-```
-
-</details>
-
----
-
 ## Project Status
 
-✅ **v2.0.0 - Refactored Architecture**
-
-- ✅ Modular architecture with plugin-ready components
-- ✅ Type-safe data models (Pydantic)
-- ✅ Structured logging
-- ✅ Workflow presets
-- ⏳ Comprehensive test suite (in progress)
-- ⏳ API documentation (in progress)
+- Python 3.8-3.14+ support (version-agnostic)
+- Automated build system with Python DLL deployment
+- Modular architecture with plugin-ready components
+- Type-safe data models (Pydantic)
+- Streamlined workflow presets
+- Comprehensive test suite (in progress)
 
 ---
 
-**RenderDoc Tools v2.0.0** - Streamlined graphics profiling for game development.
+**RenderDocTools** - Streamlined graphics profiling for game development.
