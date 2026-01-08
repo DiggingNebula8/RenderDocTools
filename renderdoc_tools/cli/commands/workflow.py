@@ -19,8 +19,7 @@ def workflow_command(args):
                              dest='preset_name', help='Quick export (default)')
     preset_group.add_argument('--full', action='store_const', const='full',
                              dest='preset_name', help='Full analysis with pipeline state')
-    preset_group.add_argument('--quest', action='store_const', const='quest',
-                             dest='preset_name', help='Quest/VR optimization analysis')
+
     preset_group.add_argument('--csv-only', action='store_const', const='csv-only',
                              dest='preset_name', help='CSV export only')
     preset_group.add_argument('--performance', action='store_const', const='performance',

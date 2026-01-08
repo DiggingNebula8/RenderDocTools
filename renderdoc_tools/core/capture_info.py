@@ -34,14 +34,6 @@ class CaptureInfoExtractor:
             
             api_props = controller.GetAPIProperties()
             
-            # Detect Meta fork from API properties
-            is_meta_fork = False
-            try:
-                api_str = str(api_props)
-                is_meta_fork = 'Qualcomm' in api_str or 'Adreno' in api_str
-            except Exception:
-                pass
-            
             # Get frame info
             frame_info = {}
             try:
@@ -55,7 +47,6 @@ class CaptureInfoExtractor:
             
             capture_info = CaptureInfo(
                 api=api_props.pipelineType,
-                is_meta_fork=is_meta_fork,
                 frame_info=frame_info
             )
             

@@ -34,9 +34,7 @@ python diagnose.py
 
 Python 3.6 reached end-of-life in December 2021 and is **not supported** by modern RenderDocTools.
 
-If you absolutely must use Python 3.6 for older RenderDoc Meta Fork versions:
+If you absolutely must use Python 3.6 for older RenderDoc versions:
 1. Use an older version of RenderDocTools (before v2.1.0)
 2. Install Python 3.6 from python.org archives
 3. Be aware of security risks
-
-**Note**: RenderDoc Meta Fork 63.13+ (with v1.40 integration) supports Python 3.8+.

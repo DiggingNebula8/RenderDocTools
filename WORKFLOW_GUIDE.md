@@ -14,11 +14,6 @@ python setup_check.py
 python -m renderdoc_tools.cli workflow capture.rdc --preset quick
 ```
 
-**Quest Analysis:**
-```bash
-python -m renderdoc_tools.cli workflow quest_capture.rdc --preset quest
-```
-
 **Full Analysis:**
 ```bash
 python -m renderdoc_tools.cli workflow capture.rdc --preset full
@@ -38,7 +33,7 @@ python batch_process.py captures/ --preset quick
 
 **Recursive search:**
 ```bash
-python batch_process.py captures/ --recursive --preset quest
+python batch_process.py captures/ --recursive --preset full
 ```
 
 ## Workflow Presets
@@ -55,21 +50,9 @@ python batch_process.py captures/ --recursive --preset quest
 - **Time:** ~10-30 seconds (depends on capture size)
 - **Output:** All data formats + pipeline states
 
-### `quest` - Quest Analysis
-- **Use when:** Analyzing Quest/VR captures
-- **Includes:** JSON + CSV + Counters + Quest optimization report
-- **Time:** ~5-15 seconds
-- **Output:** Data files + `quest_report.json` + optimization recommendations
-
-### `csv-only` - CSV Export Only
-- **Use when:** You only need CSV files for analysis
-- **Includes:** Actions CSV + Resources CSV
-- **Time:** ~2-5 seconds
-- **Output:** `{filename}_actions.csv`, `{filename}_resources.csv`
-
 ### `performance` - Performance Analysis
 - **Use when:** Performance profiling and optimization
-- **Includes:** JSON + Counters + Optimization report
+- **Includes:** JSON + Counters
 - **Time:** ~5-10 seconds
 - **Output:** Data + performance analysis
 
@@ -81,8 +64,7 @@ All outputs are organized in a structured directory:
 rdc_output/
 ├── capture_name.json          # Main JSON export
 ├── capture_name_actions.csv    # Actions/draw calls CSV
-├── capture_name_resources.csv  # Resources CSV
-└── capture_name_quest_report.json  # Quest report (if applicable)
+└── capture_name_resources.csv  # Resources CSV
 ```
 
 ## Common Workflows
@@ -95,18 +77,6 @@ python -m renderdoc_tools.cli workflow latest.rdc --preset quick
 
 # If issues found, run full analysis
 python -m renderdoc_tools.cli workflow latest.rdc --preset full
-```
-
-### Quest Optimization Workflow
-
-```bash
-# 1. Capture from Quest device
-# 2. Run Quest analysis
-python -m renderdoc_tools.cli workflow quest_capture.rdc --preset quest
-
-# 3. Review quest_report.json for recommendations
-# 4. Make optimizations
-# 5. Re-capture and compare
 ```
 
 ### CI/CD Integration
@@ -134,7 +104,7 @@ python batch_process.py research_captures/ --recursive --preset full
 ### Custom Output Directory
 
 ```bash
-python -m renderdoc_tools.cli workflow capture.rdc --preset quest --output-dir ./my_results
+python -m renderdoc_tools.cli workflow capture.rdc --preset full --output-dir ./my_results
 ```
 
 ### Parse Command Options
@@ -169,7 +139,7 @@ from renderdoc_tools.workflows import WorkflowRunner, get_preset
 from pathlib import Path
 
 # Process single file
-preset = get_preset('quest')
+preset = get_preset('full')
 runner = WorkflowRunner(preset)
 capture_data = runner.run(Path('capture.rdc'), output_dir=Path('./output'))
 
@@ -200,7 +170,7 @@ exporter.export(capture_data, Path("output.json"))
 #!/bin/bash
 # Process all captures and generate report
 
-python batch_process.py captures/ --preset quest --output-dir ./results
+python batch_process.py captures/ --preset full --output-dir ./results
 
 # Check if any failed
 FAILED=$(python -c "

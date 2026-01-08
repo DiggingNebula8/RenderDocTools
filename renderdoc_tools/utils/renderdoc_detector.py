@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 def find_renderdoc_installations() -> List[Dict[str, str]]:
     """
-    Find all RenderDoc installations (standard and Meta Fork)
+    Find all RenderDoc installations
     
     Returns:
         List of dicts with 'type', 'path', 'pymodules_path', 'name'
@@ -25,12 +25,6 @@ def find_renderdoc_installations() -> List[Dict[str, str]]:
             Path("C:/Program Files (x86)/RenderDoc"),
             Path(os.environ.get("PROGRAMFILES", "")) / "RenderDoc",
             Path(os.environ.get("PROGRAMFILES(X86)", "")) / "RenderDoc",
-        ]
-        
-        # Meta Fork locations
-        meta_fork_paths = [
-            Path("C:/Program Files/RenderDocForMetaQuest"),
-            Path(os.environ.get("PROGRAMFILES", "")) / "RenderDocForMetaQuest",
         ]
         
         # Check standard RenderDoc
@@ -48,19 +42,6 @@ def find_renderdoc_installations() -> List[Dict[str, str]]:
                         'name': 'RenderDoc (Standard)'
                     })
                     break  # Only need one standard installation
-        
-        # Check Meta Fork
-        for path in meta_fork_paths:
-            if path.exists():
-                pymodules = path / "pymodules"
-                if pymodules.exists():
-                    installations.append({
-                        'type': 'meta_fork',
-                        'path': str(path),
-                        'pymodules_path': str(pymodules),
-                        'name': 'RenderDoc Meta Fork'
-                    })
-                    break  # Only need one Meta Fork installation
     
     elif sys.platform == "linux":
         # Linux locations
@@ -88,7 +69,6 @@ def find_renderdoc_installations() -> List[Dict[str, str]]:
 def get_preferred_renderdoc() -> Optional[Dict[str, str]]:
     """
     Get the preferred RenderDoc installation
-    Prefers Meta Fork if both are available
     
     Returns:
         Dict with installation info, or None if not found
@@ -98,12 +78,7 @@ def get_preferred_renderdoc() -> Optional[Dict[str, str]]:
     if not installations:
         return None
     
-    # Prefer Meta Fork if available
-    for inst in installations:
-        if inst['type'] == 'meta_fork':
-            return inst
-    
-    # Otherwise return first (standard)
+    # Return first installation found
     return installations[0]
 
 

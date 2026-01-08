@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class CounterExtractor(BaseExtractor):
-    """Extracts performance counters (Meta fork specific)"""
+    """Extracts performance counters"""
     
     def extract(self, controller) -> Dict[str, Any]:
         """

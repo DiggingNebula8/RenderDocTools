@@ -18,7 +18,7 @@
 │    Extractors       │  │    Exporters      │  │  Analyzers  │
 │  (data extraction)   │  │  (output formats)  │  │  (analysis) │
 │                     │  │                    │  │             │
-│  - Actions          │  │  - JSON            │  │  - Quest    │
+│  - Actions          │  │  - JSON            │  │  - Perf     │
 │  - Resources        │  │  - CSV             │  │  - Perf     │
 │  - Shaders          │  │  - Custom          │  │  - Custom   │
 │  - Pipeline         │  │                    │  │             │
@@ -61,7 +61,6 @@
 
 ### Analyzers Layer
 - **BaseAnalyzer**: Abstract interface
-- **QuestAnalyzer**: Quest-specific analysis
 - **PerformanceAnalyzer**: General performance analysis
 - **Registry**: Analyzer registration system
 
@@ -96,7 +95,6 @@ Parser (orchestrates extraction)
 WorkflowRunner (combines data)
     │
     ├──► Analyzers (analyze data)
-    │   ├──► QuestAnalyzer
     │   └──► PerformanceAnalyzer
     │
     └──► Exporters (output data)

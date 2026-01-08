@@ -4,9 +4,9 @@ Thank you for your interest in contributing!
 
 ## Development Setup
 
-1. **Install Python 3.6**
-   - Required for RenderDoc Meta Fork compatibility
-   - See `INSTALL_PYTHON36.md` for instructions
+1. **Install Python 3.8+**
+   - Required for modern features and security updates
+   - See README.md for installation instructions
 
 2. **Create Virtual Environment**
    ```powershell
@@ -30,7 +30,6 @@ Thank you for your interest in contributing!
 ## Testing
 
 - Test with sample RDC files
-- Ensure compatibility with RenderDoc Meta Fork
 - Test all workflow presets
 
 ## Pull Request Process

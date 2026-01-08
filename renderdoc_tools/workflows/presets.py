@@ -10,7 +10,6 @@ from renderdoc_tools.extractors import (
     CounterExtractor
 )
 from renderdoc_tools.exporters import JSONExporter, CSVExporter
-from renderdoc_tools.analyzers.quest.report import QuestReportGenerator
 
 
 def get_preset(name: str) -> Workflow:
@@ -29,7 +28,6 @@ def get_preset(name: str) -> Workflow:
     presets = {
         'quick': _create_quick_preset(),
         'full': _create_full_preset(),
-        'quest': _create_quest_preset(),
         'csv-only': _create_csv_only_preset(),
         'performance': _create_performance_preset(),
     }
@@ -51,7 +49,6 @@ def list_presets() -> dict:
     return {
         'quick': 'Quick export - JSON only, no pipeline state',
         'full': 'Full analysis - JSON with pipeline state and counters',
-        'quest': 'Quest analysis - Full Quest-specific profiling',
         'csv-only': 'CSV export only - Actions and resources to CSV',
         'performance': 'Performance analysis - Counters and optimization report',
     }
@@ -93,27 +90,6 @@ def _create_full_preset() -> Workflow:
     )
 
 
-def _create_quest_preset() -> Workflow:
-    """Create Quest workflow preset"""
-    return Workflow(
-        name='quest',
-        description='Quest analysis - Full Quest-specific profiling',
-        extractors=[
-            ActionExtractor(),
-            ResourceExtractor(),
-            ShaderExtractor(),
-            CounterExtractor(),
-        ],
-        exporters=[
-            JSONExporter(),
-            CSVExporter(),
-        ],
-        analyzers=[
-            QuestReportGenerator(),
-        ],
-        capture_info_extractor=CaptureInfoExtractor()
-    )
-
 
 def _create_csv_only_preset() -> Workflow:
     """Create CSV-only workflow preset"""
@@ -145,9 +121,7 @@ def _create_performance_preset() -> Workflow:
         exporters=[
             JSONExporter(),
         ],
-        analyzers=[
-            QuestReportGenerator(),
-        ],
+        analyzers=[],
         capture_info_extractor=CaptureInfoExtractor()
     )
 

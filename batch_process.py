@@ -150,7 +150,7 @@ Examples:
   python batch_process.py captures/ --preset quick
   
   # Process specific files
-  python batch_process.py file1.rdc file2.rdc --preset quest
+  python batch_process.py file1.rdc file2.rdc --preset full
   
   # Recursive directory search
   python batch_process.py captures/ --recursive --preset full

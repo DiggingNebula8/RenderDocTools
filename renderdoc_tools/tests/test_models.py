@@ -25,9 +25,8 @@ def test_capture_data_default_lists():
 
 def test_capture_info_creation():
     """Test basic CaptureInfo creation"""
-    info = CaptureInfo(api=2, is_meta_fork=True)
+    info = CaptureInfo(api=2)
     assert info.api == 2
-    assert info.is_meta_fork is True
 
 
 def test_action_with_aliases():

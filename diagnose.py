@@ -82,7 +82,7 @@ def check_renderdoc():
             print_check(
                 False,
                 "RenderDoc not found",
-                "Install RenderDoc or RenderDoc Meta Fork"
+                "Install RenderDoc"
             )
             return False
     except ImportError:

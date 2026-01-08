@@ -16,7 +16,6 @@ class API(str, Enum):
 class CaptureInfo(BaseModel):
     """Capture file metadata"""
     api: int  # RenderDoc API type (will be converted to API enum if needed)
-    is_meta_fork: bool = Field(default=False, alias="is_meta_fork")
     frame_info: Optional[Dict[str, Any]] = Field(default_factory=dict, alias="frame_info")
     
     class Config:

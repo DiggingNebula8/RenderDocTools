@@ -61,7 +61,7 @@ class WorkflowRunner:
             capture_info_extractor = self.workflow.capture_info_extractor or CaptureInfoExtractor()
             capture_info = capture_info_extractor.extract(capture.controller)
             
-            self._update_progress(f"API: {capture_info.api}, Meta Fork: {capture_info.is_meta_fork}")
+            self._update_progress(f"API: {capture_info.api}")
             
             # Extract data using configured extractors
             self._update_progress("Extracting data...")

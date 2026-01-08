@@ -11,7 +11,7 @@ def main():
         print("\nUsage:")
         print("  rdc-tools workflow <file.rdc> --preset <preset>")
         print("  rdc-tools parse <file.rdc> -o <output.json>")
-        print("\nPresets: quick, full, quest, csv-only, performance")
+        print("\nPresets: quick, full, csv-only, performance")
         sys.exit(1)
     
     command = sys.argv[1]

@@ -18,11 +18,6 @@ rdc-tools workflow capture.rdc --quick
 rdc-tools workflow capture.rdc --full
 ```
 
-### Quest/VR Analysis
-```bash
-rdc-tools workflow quest.rdc --quest
-```
-
 ### List Presets
 ```bash
 rdc-tools workflow --list-presets
@@ -34,7 +29,6 @@ rdc-tools workflow --list-presets
 |--------|-----------|-------|--------|
 | `quick` | `--quick` | ⚡⚡⚡ | JSON only |
 | `full` | `--full` | ⚡ | JSON+CSV+Pipeline |
-| `quest` | `--quest` | ⚡⚡ | JSON+CSV+Quest Report |
 | `csv-only` | `--csv-only` | ⚡⚡⚡ | CSV only |
 | `performance` | `--performance` | ⚡⚡ | JSON+Counters |
 
@@ -50,15 +44,6 @@ data = parser.parse("capture.rdc")
 
 exporter = JSONExporter()
 exporter.export(data, "output.json")
-```
-
-### Quest Analysis
-```python
-from renderdoc_tools.workflows import WorkflowRunner, get_preset
-
-preset = get_preset('quest')
-runner = WorkflowRunner(preset)
-data = runner.run("quest_capture.rdc")
 ```
 
 ## Troubleshooting

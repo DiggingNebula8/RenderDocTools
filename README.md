@@ -4,8 +4,6 @@
 
 Open-source parser for extracting structured data from RenderDoc capture files (.rdc) to JSON and CSV formats.
 
-Compatible with **RenderDoc** and **RenderDoc Meta Fork** (Quest/VR profiling).
-
 ---
 
 ## Quick Start (2 Steps)
@@ -34,7 +32,7 @@ rdc-tools workflow capture.rdc --quick
 - Optional pipeline state extraction per event
 - JSON and CSV output formats
 - API-agnostic (works with D3D11, D3D12, Vulkan, OpenGL)
-- **Streamlined workflow presets** (quick, full, quest, etc.)
+- **Streamlined workflow presets** (quick, full, etc.)
 - **Modular architecture** with plugin-ready extractors/exporters
 - **Type-safe** data models using Pydantic
 - **Structured logging** for debugging and monitoring
@@ -42,14 +40,11 @@ rdc-tools workflow capture.rdc --quick
 ## Requirements
 
 - **Python 3.8+** (Recommended: Python 3.10 or higher)
-- RenderDoc (with Python bindings) or **RenderDoc Meta Fork**
+- RenderDoc (with Python bindings)
 - **Pydantic** (for data validation)
 
 > [!NOTE]
 > **Modern Python Support**: RenderDocTools works with Python 3.8-3.14 using `os.add_dll_directory()` for Windows DLL loading. Python 3.6 is no longer required.
-
-> [!TIP]
-> **RenderDoc Meta Fork 63.13+** (with RenderDoc v1.40 integration) fully supports modern Python versions.
 
 ---
 
@@ -63,11 +58,6 @@ rdc-tools workflow capture.rdc --quick
 ### Full Analysis
 ```bash
 rdc-tools workflow capture.rdc --full
-```
-
-### Quest Analysis
-```bash
-rdc-tools workflow quest.rdc --quest
 ```
 
 ### List All Presets
@@ -88,7 +78,6 @@ python batch_process.py captures/ --preset quick
 |-----------|-------|--------|----------|
 | `--quick` | ⚡⚡⚡ | JSON | Daily development, quick checks |
 | `--full` | ⚡ | JSON+CSV+Pipeline | Complete analysis |
-| `--quest` | ⚡⚡ | JSON+CSV+Report | Quest/VR optimization |
 | `--csv-only` | ⚡⚡⚡ | CSV only | Data analysis tools |
 | `--performance` | ⚡⚡ | JSON+Counters+Report | Performance profiling |
 
@@ -102,7 +91,6 @@ python batch_process.py captures/ --preset quick
 {
   "capture_info": {
     "api": 2,
-    "is_meta_fork": false,
     "frame_info": {
       "frame_number": 5633,
       "capture_time": 0
@@ -136,23 +124,6 @@ python batch_process.py captures/ --preset quick
 | 123 | Backbuffer | Texture | 1920 | 1080 | R8G8B8A8_UNORM |
 
 ---
-
-## Meta Quest / VR Support
-
-The parser **fully supports RenderDoc Meta Fork** captures from Quest headsets:
-
-- **Automatic detection** of Quest/VR captures
-- **Performance counter extraction** via `CounterExtractor`
-- **Quest-specific analyzers**:
-  - Performance analysis (`QuestPerformanceAnalyzer`)
-  - Multiview rendering detection (`MultiviewAnalyzer`)
-  - Fixed foveated rendering check (`FoveationAnalyzer`)
-  - Optimization report generation (`QuestReportGenerator`)
-
-The Meta fork adds:
-- Tile-level render stage traces
-- 45+ low-level GPU metrics per draw call
-- Snapdragon-specific profiling data
 
 ---
 
@@ -207,17 +178,6 @@ data = parser.parse("capture.rdc")
 
 exporter = JSONExporter()
 exporter.export(data, Path("output.json"))
-```
-
-### Quest Analysis
-
-```python
-from renderdoc_tools.workflows import WorkflowRunner, get_preset
-
-# Run Quest workflow
-preset = get_preset('quest')
-runner = WorkflowRunner(preset)
-data = runner.run(Path("quest_capture.rdc"))
 ```
 
 ### Custom Workflow
@@ -345,11 +305,6 @@ The package automatically detects RenderDoc installations, but you can manually 
 set PYTHONPATH=C:\Program Files\RenderDoc\
 ```
 
-**Windows (Meta Fork):**
-```bash
-set PYTHONPATH=C:\Program Files\RenderDocForMetaQuest\pymodules
-```
-
 **Linux:**
 ```bash
 export PYTHONPATH=/usr/share/renderdoc/
@@ -375,7 +330,6 @@ python test_renderdoc.py
 - ✅ Type-safe data models (Pydantic)
 - ✅ Structured logging
 - ✅ Workflow presets
-- ✅ Quest-specific analyzers
 - ⏳ Comprehensive test suite (in progress)
 - ⏳ API documentation (in progress)
 
