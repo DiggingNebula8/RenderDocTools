@@ -67,7 +67,7 @@ def check_package_installed():
 
 def check_renderdoc():
     """Check if RenderDoc can be found and imported."""
-   try:
+    try:
         from renderdoc_tools.utils.renderdoc_detector import find_renderdoc_installations
         installations = find_renderdoc_installations()
         

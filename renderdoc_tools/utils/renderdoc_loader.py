@@ -25,12 +25,25 @@ def _try_load_from_path(pymodules_path: Path) -> Optional[object]:
         if str(pymodules_path) not in sys.path:
             sys.path.insert(0, str(pymodules_path))
         
+        # For Python 3.8+ on Windows, add DLL directory
+        # This allows loading of native DLLs (renderdoc.dll, python3xx.dll, etc.)
+        dll_directory = None
+        if sys.platform == "win32" and hasattr(os, 'add_dll_directory'):
+            # Add parent directory (where DLLs are located)
+            parent_dir = pymodules_path.parent
+            if parent_dir.exists():
+                try:
+                    dll_directory = os.add_dll_directory(str(parent_dir))
+                    logger.debug(f"Added DLL directory: {parent_dir}")
+                except Exception as e:
+                    logger.warning(f"Failed to add DLL directory {parent_dir}: {e}")
         
         # Try importing
         import renderdoc as rd
         logger.info(f"Loaded RenderDoc module from: {pymodules_path}")
         return rd
-    except ImportError:
+    except ImportError as e:
+        logger.debug(f"Import error from {pymodules_path}: {e}")
         return None
     except Exception as e:
         logger.debug(f"Failed to load from {pymodules_path}: {e}")
