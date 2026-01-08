@@ -241,7 +241,6 @@ def main():
         output_dir / 'renderdoc.dll',
         output_dir / 'qrenderdoc.exe',
         output_dir / 'renderdoccmd.exe',
-        output_dir / 'pymodules' / 'renderdoc.pyd',
     ]
     
     all_good = True
