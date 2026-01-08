@@ -35,18 +35,65 @@ rdc-tools workflow capture.rdc --quick
 - **Type-safe** data models using Pydantic
 - **Modular architecture** - plugin-ready extractors/exporters
 
----
+## Setup
 
-## Requirements
+### Requirements
 
-- **Python 3.8+** (any version - auto-detected and configured)
-- **Visual Studio 2019/2022** (for building RenderDoc)
+- **Python 3.8+** (any version - auto-detected)
+- **Visual Studio 2019/2022** with C++ Desktop Development workload
 - **Git** (for submodules)
 
+### One-Command Setup
+
+```bash
+python setup_all.py
+```
+
+This command:
+1. **Initializes submodules** - downloads RenderDoc source
+2. **Detects your Python** - finds DLL, headers, and libs
+3. **Retargets solution** - updates to your Visual Studio version
+4. **Builds RenderDoc** - compiles with your Python version
+5. **Installs tools** - `pip install -e .`
+
+**Build time:** 10-30 minutes (first build only)
+
 > [!NOTE]
-> **Python Version Flexibility**: Unlike typical RenderDoc Python integrations, RenderDocTools automatically builds RenderDoc with YOUR active Python version (3.8-3.14+). No need to install a specific Python version!
+> **Python Version Flexibility**: RenderDocTools automatically builds RenderDoc with YOUR Python version (3.8-3.14+). No need to install a specific version!
+
+### What Gets Built
+
+```
+renderdoc/x64/Development/
+├── qrenderdoc.exe     # GUI application
+├── renderdoccmd.exe   # Command-line tool  
+├── renderdoc.dll      # Core library
+└── python314.dll      # Your Python runtime
+```
+
+See [HOW_SETUP_WORKS.md](HOW_SETUP_WORKS.md) for technical details.
 
 ---
+
+## Android Support
+
+To capture from Android devices, build the Android APK separately:
+
+```bash
+# In WSL2/Linux
+cd /mnt/c/Users/<user>/dev/RD/RenderDocTools/renderdoc
+mkdir build-android-arm64 && cd build-android-arm64
+cmake -DBUILD_ANDROID=On -DANDROID_ABI=arm64-v8a \
+      -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
+      -G "Unix Makefiles" ..
+make -j$(nproc)
+
+# Copy APK to Windows
+cp bin/*.apk ../x64/Development/
+```
+
+See [AndroidSupportLinux.md](AndroidSupportLinux.md) for complete setup guide.
+
 
 ## Usage
 
@@ -150,8 +197,6 @@ RenderDocTools uses **version-agnostic build automation**:
 
 This solves the common Python version mismatch problem with RenderDoc's Python bindings.
 
-See [BUILD_GUIDE.md](BUILD_GUIDE.md) for technical details.
-
 ---
 
 ## Troubleshooting
@@ -171,6 +216,10 @@ python diagnose.py
 - Run `python setup_all.py` to rebuild with correct Python version
 - Verify: `python diagnose.py`
 
+**RenderDoc shows wrong Python version:**
+- See [BUILD_FIXES.md](BUILD_FIXES.md) - Python version detection section
+- Ensure `RENDERDOC_PYTHON_PREFIX64` is set during build
+
 **"rdc-tools command not found":**
 ```bash
 pip install -e .[cli]
@@ -180,11 +229,15 @@ pip install -e .[cli]
 
 ## Documentation
 
-- **[BUILD_GUIDE.md](BUILD_GUIDE.md)** - Build system and Python version handling
-- **[WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md)** - Complete workflow guide
-- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - CLI command reference
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Architecture overview
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+| Document | Description |
+|----------|-------------|
+| [HOW_SETUP_WORKS.md](HOW_SETUP_WORKS.md) | Build process and Python detection |
+| [AndroidSupportLinux.md](AndroidSupportLinux.md) | Android APK build guide for WSL2/Linux |
+| [BUILD_FIXES.md](BUILD_FIXES.md) | Build issues and fixes (linker errors) |
+| [CONTRIBUTE.md](CONTRIBUTE.md) | Upstream contribution guide |
+| [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md) | Complete workflow guide |
+| [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | CLI command reference |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Architecture overview |
 
 ---
 
