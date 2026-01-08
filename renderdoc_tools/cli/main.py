@@ -6,13 +6,13 @@ from pathlib import Path
 # Simple CLI implementation - can be enhanced with Click/Typer later
 def main():
     """Main CLI entry point"""
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 2 or sys.argv[1] in ('--help', '-h'):
         print("RenderDoc Tools CLI")
         print("\nUsage:")
         print("  rdc-tools workflow <file.rdc> --preset <preset>")
         print("  rdc-tools parse <file.rdc> -o <output.json>")
         print("\nPresets: quick, full, csv-only, performance")
-        sys.exit(1)
+        return 0  # Return 0 for help (not an error)
     
     command = sys.argv[1]
     
